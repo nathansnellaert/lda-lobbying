@@ -6,6 +6,7 @@ lobbying activity (issue code + description) from a filing.
 
 import gzip
 import json
+from pathlib import Path
 import pyarrow as pa
 from subsets_utils import get_data_dir, upload_data, publish
 from .test import test
@@ -32,7 +33,7 @@ METADATA = {
 
 def run():
     """Transform, validate, and upload dataset."""
-    data_dir = get_data_dir()
+    data_dir = Path(get_data_dir())
     raw_dir = data_dir / "raw"
 
     all_records = []
