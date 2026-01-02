@@ -4,12 +4,12 @@ Extracts core filing information including registrant, client, and amounts.
 Each row represents one lobbying disclosure filing.
 """
 
-import gzip
-import json
-from pathlib import Path
 import pyarrow as pa
-from subsets_utils import get_data_dir, upload_data, publish
+from subsets_utils import load_raw_json, upload_data, publish
 from .test import test
+
+# Must match ingest/filings.py YEARS
+YEARS = [2024, 2023, 2022, 2021, 2020]
 
 DATASET_ID = "lda_filings"
 
@@ -71,17 +71,13 @@ def extract_quarter(period: str | None) -> str | None:
 
 def run():
     """Transform, validate, and upload dataset."""
-    data_dir = Path(get_data_dir())
-    raw_dir = data_dir / "raw"
-
     all_records = []
 
     # Process all years
-    for raw_file in sorted(raw_dir.glob("filings_*.json.gz")):
-        print(f"  Processing {raw_file.name}...")
+    for year in YEARS:
+        print(f"  Processing filings_{year}...")
 
-        with gzip.open(raw_file, "rt", encoding="utf-8") as f:
-            filings = json.load(f)
+        filings = load_raw_json(f"filings_{year}")
 
         for filing in filings:
             registrant = filing.get("registrant") or {}
