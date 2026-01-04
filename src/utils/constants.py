@@ -9,6 +9,9 @@ API_BASE = "https://lda.senate.gov/api/v1"
 # Rate limit: 15 requests/minute for unauthenticated = 4 seconds between requests
 RATE_LIMIT_DELAY = 4.5
 
-# Years to fetch - LDA data available from 1999, LD-203 required since 2008
-# This list is shared between ingest and transform modules
-YEARS = [2024, 2023, 2022, 2021, 2020]
+# Years to fetch - LDA filings available from 1999, LD-203 contributions from 2008
+FILING_YEARS = list(range(2024, 1998, -1))  # 2024 down to 1999
+CONTRIBUTION_YEARS = list(range(2024, 2007, -1))  # 2024 down to 2008
+
+# For backwards compatibility with transforms that use YEARS
+YEARS = FILING_YEARS

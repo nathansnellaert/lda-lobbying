@@ -8,20 +8,17 @@ API: https://lda.senate.gov/api/v1/contributions/
 
 import time
 from subsets_utils import get, save_raw_json, load_state, save_state
-from utils import YEARS, API_BASE, RATE_LIMIT_DELAY
-
-# Pages per year (contribution reports are fewer than filings)
-MAX_PAGES_PER_YEAR = 100
+from utils import CONTRIBUTION_YEARS, API_BASE, RATE_LIMIT_DELAY
 
 
-def fetch_contributions_for_year(year: int, max_pages: int) -> list[dict]:
-    """Fetch contribution reports for a given year with pagination."""
+def fetch_contributions_for_year(year: int) -> list[dict]:
+    """Fetch all contribution reports for a given year with pagination."""
     all_contributions = []
     url = f"{API_BASE}/contributions/"
     params = {"filing_year": year}
     page = 1
 
-    while url and page <= max_pages:
+    while url:
         print(f"    Page {page}...")
         response = get(url, params=params if page == 1 else None)
         data = response.json()
@@ -32,7 +29,7 @@ def fetch_contributions_for_year(year: int, max_pages: int) -> list[dict]:
         url = data.get("next")
         page += 1
 
-        if url and page <= max_pages:
+        if url:
             time.sleep(RATE_LIMIT_DELAY)
 
     return all_contributions
@@ -43,7 +40,7 @@ def run():
     state = load_state("contributions")
     completed = set(state.get("completed_years", []))
 
-    pending = [y for y in YEARS if y not in completed]
+    pending = [y for y in CONTRIBUTION_YEARS if y not in completed]
 
     if not pending:
         print("  All contribution years up to date")
@@ -54,7 +51,7 @@ def run():
     for year in pending:
         print(f"  [{year}] Fetching contributions...")
 
-        contributions = fetch_contributions_for_year(year, MAX_PAGES_PER_YEAR)
+        contributions = fetch_contributions_for_year(year)
         print(f"    -> Total: {len(contributions):,} reports")
 
         if contributions:
