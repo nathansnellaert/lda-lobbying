@@ -6,10 +6,8 @@ lobbying activity (issue code + description) from a filing.
 
 import pyarrow as pa
 from subsets_utils import load_raw_json, upload_data, publish
+from utils import YEARS
 from .test import test
-
-# Must match ingest/filings.py YEARS
-YEARS = [2024, 2023, 2022, 2021, 2020]
 
 DATASET_ID = "lda_lobbying_activities"
 

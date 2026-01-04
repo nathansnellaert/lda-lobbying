@@ -8,14 +8,7 @@ API: https://lda.senate.gov/api/v1/filings/
 
 import time
 from subsets_utils import get, save_raw_json, load_state, save_state
-
-API_BASE = "https://lda.senate.gov/api/v1"
-
-# Years to fetch - LDA data available from 1999
-YEARS = [2024, 2023, 2022, 2021, 2020]
-
-# Rate limit: 15 requests/minute for unauthenticated = 4 seconds between requests
-RATE_LIMIT_DELAY = 4.5
+from utils import YEARS, API_BASE, RATE_LIMIT_DELAY
 
 # Pages per year to fetch (25 filings per page)
 # 50 pages = 1250 filings per year, a good sample
